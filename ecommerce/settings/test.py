@@ -23,9 +23,7 @@ LOGGING['handlers']['local'] = {'class': 'logging.NullHandler'}
 LOGGING['handlers']['console'] = {'class': 'logging.NullHandler'}
 
 if os.getenv('DISABLE_MIGRATIONS'):
-
     class DisableMigrations(object):
-
         def __contains__(self, item):
             return True
 
@@ -97,7 +95,11 @@ PAYMENT_PROCESSOR_CONFIG = {
             'cancel_checkout_path': PAYMENT_PROCESSOR_CANCEL_PATH,
             'error_path': PAYMENT_PROCESSOR_ERROR_PATH,
         },
-        'invoice': {}
+        'invoice': {},
+        'stripe': {
+            'publishable_key': 'fake-publishable-key',
+            'secret_key': 'fake-secret-key',
+        },
     },
     'other': {
         'cybersource': {
@@ -114,13 +116,17 @@ PAYMENT_PROCESSOR_CONFIG = {
         },
         'paypal': {
             'mode': 'sandbox',
-            'client_id': 'pther-fake-client-id',
-            'client_secret': 'pther-fake-client-secret',
+            'client_id': 'other-fake-client-id',
+            'client_secret': 'other-fake-client-secret',
             'receipt_path': PAYMENT_PROCESSOR_RECEIPT_PATH,
             'cancel_checkout_path': PAYMENT_PROCESSOR_CANCEL_PATH,
             'error_path': PAYMENT_PROCESSOR_ERROR_PATH,
         },
-        'invoice': {}
+        'invoice': {},
+        'stripe': {
+            'publishable_key': 'other-fake-publishable-key',
+            'secret_key': 'other-fake-secret-key',
+        },
     }
 }
 

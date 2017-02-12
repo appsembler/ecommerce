@@ -132,8 +132,13 @@ class PaymentForm(forms.Form):
                 raise ValidationError({'postal_code': _('This field is required.')})
 
             if len(postal_code) > 9:
-                raise ValidationError(
-                    {'postal_code': _(
-                        'Postal codes for the U.S. and Canada are limited to nine (9) characters.')})
+                raise ValidationError({
+                    'postal_code': _(
+                        'Postal codes for the U.S. and Canada are limited to nine (9) characters.')
+                })
 
         return cleaned_data
+
+
+class StripePaymentForm(PaymentForm):
+    stripeToken = forms.CharField(widget=forms.HiddenInput(), required=True)
