@@ -2,6 +2,7 @@
 import httpretty
 from django.conf import settings
 from django.template import Context, Template
+from django.test import RequestFactory
 
 from ecommerce.core.tests import toggle_switch
 from ecommerce.core.tests.decorators import mock_enterprise_api_client
@@ -13,9 +14,9 @@ TEST_ENTERPRISE_CUSTOMER_UUID = 'cf246b88-d5f6-4908-a522-fc307e0b0c59'
 
 
 @httpretty.activate
-class EnterpriseTempateTagsTests(EnterpriseServiceMockMixin, CouponMixin, TestCase):
+class EnterpriseTemplateTagsTests(EnterpriseServiceMockMixin, CouponMixin, TestCase):
     def setUp(self):
-        super(EnterpriseTempateTagsTests, self).setUp()
+        super(EnterpriseTemplateTagsTests, self).setUp()
 
         # Enable enterprise functionality
         toggle_switch(settings.ENABLE_ENTERPRISE_ON_RUNTIME_SWITCH, True)
@@ -31,6 +32,8 @@ class EnterpriseTempateTagsTests(EnterpriseServiceMockMixin, CouponMixin, TestCa
         self.mock_specific_enterprise_customer_api(TEST_ENTERPRISE_CUSTOMER_UUID, name=enterprise_customer_name)
 
         coupon = self.create_coupon(enterprise_customer=TEST_ENTERPRISE_CUSTOMER_UUID)
+        request = RequestFactory()
+        request.site = self.site
         voucher = coupon.attr.coupon_vouchers.vouchers.first()
 
         template = Template(
@@ -38,7 +41,7 @@ class EnterpriseTempateTagsTests(EnterpriseServiceMockMixin, CouponMixin, TestCa
             "{% enterprise_customer_for_voucher voucher as enterprise_customer %}"
             "{{ enterprise_customer.name }}"
         )
-        result = template.render(Context({'voucher': voucher}))
+        result = template.render(Context({'voucher': voucher, 'request': request}))
         self.assertIn(enterprise_customer_name, result)
 
     @mock_enterprise_api_client
@@ -52,6 +55,8 @@ class EnterpriseTempateTagsTests(EnterpriseServiceMockMixin, CouponMixin, TestCa
         self.mock_specific_enterprise_customer_api(TEST_ENTERPRISE_CUSTOMER_UUID, name=enterprise_customer_name)
 
         coupon = self.create_coupon(enterprise_customer='')
+        request = RequestFactory()
+        request.site = self.site
         voucher = coupon.attr.coupon_vouchers.vouchers.first()
 
         template = Template(
@@ -59,5 +64,5 @@ class EnterpriseTempateTagsTests(EnterpriseServiceMockMixin, CouponMixin, TestCa
             "{% enterprise_customer_for_voucher voucher as enterprise_customer %}"
             "{{ enterprise_customer.name }}"
         )
-        result = template.render(Context({'voucher': voucher}))
+        result = template.render(Context({'voucher': voucher, 'request': request}))
         self.assertNotIn(enterprise_customer_name, result)
