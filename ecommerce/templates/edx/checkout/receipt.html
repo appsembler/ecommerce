@@ -102,9 +102,10 @@
                             <span class="price">-{{ discount.amount|currency:order.currency }}</span>
                           </div>
                           <div class="enterprise-customer">
-                            {% trans "Courtesty of " %}
                             {% enterprise_customer_for_voucher discount.voucher as enterprise_customer %}
-                            {{ enterprise_customer.name }}.
+                            {% blocktrans with enterprise_name=enterprise_customer.name %}
+                                Courtesy of {{ enterprise_name }}.
+                            {% endblocktrans %}
                           </div>
                         {% endfor %}
 
