@@ -358,6 +358,7 @@
         .discount {
             opacity: 0.5;
             font-weight: 700;
+            padding-right: 15px;
         }
         .enterprise-customer {
             font-weight: 300;
@@ -370,6 +371,12 @@
     .discount {
         display: block;
         margin-top: 10px;
+    }
+
+    .course-description {
+        .discount {
+            display: inline-block;
+        }
     }
 }
 

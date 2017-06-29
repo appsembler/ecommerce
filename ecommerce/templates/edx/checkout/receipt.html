@@ -88,11 +88,11 @@
                             <strong>{% trans "Coupon Applied:" %} </strong>
                             {% if discount.voucher_code %}
                               {% with voucher=discount.voucher %}
-                                <span class="discount">{{ voucher.code }}</span>
                                 <span class="discount">
-                                  {% blocktrans trimmed with voucher_code=voucher.code voucher_discount_amount=voucher.benefit|benefit_discount %}
-                                    {{ voucher_discount_amount }} off
-                                  {% endblocktrans %}
+                                    {{ voucher.code }}
+                                    {% blocktrans trimmed with voucher_code=voucher.code voucher_discount_amount=voucher.benefit|benefit_discount %}
+                                        {{ voucher_discount_amount }} off
+                                    {% endblocktrans %}
                                 </span>
                               {% endwith %}
                             {% else %}
