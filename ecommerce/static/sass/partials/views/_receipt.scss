@@ -344,25 +344,16 @@
 
                 color: black;
             }
+
+            .enterprise-customer {
+                font-weight: 300;
+                padding-top: 12px;
+            }
         }
     }
 
     .wrapper-content-main {
         margin-bottom: 20px;
-    }
-
-    .course-description {
-        .coupon-details {
-            margin: 2px 0;
-        }
-        .discount {
-            opacity: 0.5;
-            font-weight: 700;
-            padding-right: 15px;
-        }
-        .enterprise-customer {
-            font-weight: 300;
-        }
     }
 }
 
@@ -371,12 +362,6 @@
     .discount {
         display: block;
         margin-top: 10px;
-    }
-
-    .course-description {
-        .discount {
-            display: inline-block;
-        }
     }
 }
 
