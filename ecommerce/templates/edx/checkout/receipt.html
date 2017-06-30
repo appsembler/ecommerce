@@ -80,37 +80,10 @@
                 <dd class="quantity">{{ line.quantity }}</dd>
                 <dt class="course-description sr">{% trans "Description:" %}</dt>
                 <dd class="course-description">
-                  <div class="course-title">{{ line.description }}</div>
-                    {% with discounts=order.basket_discounts %}
-                      {% if discounts %}
-                        {% for discount in discounts %}
-                          <div class="coupon-details">
-                            <strong>{% trans "Coupon Applied:" %} </strong>
-                            {% if discount.voucher_code %}
-                              {% with voucher=discount.voucher %}
-                                <span class="discount">{{ voucher.code }}</span>
-                                <span class="discount">
-                                  {% blocktrans trimmed with voucher_code=voucher.code voucher_discount_amount=voucher.benefit|benefit_discount %}
-                                    {{ voucher_discount_amount }} off
-                                  {% endblocktrans %}
-                                </span>
-                              {% endwith %}
-                            {% else %}
-                              <span class="discount">{{ discount.offer_name }}</span>
-                            {% endif %}
-
-                            <span class="price">-{{ discount.amount|currency:order.currency }}</span>
-                          </div>
-                          <div class="enterprise-customer">
-                            {% enterprise_customer_for_voucher discount.voucher as enterprise_customer %}
-                            {% blocktrans with enterprise_name=enterprise_customer.name %}
-                                Courtesy of {{ enterprise_name }}.
-                            {% endblocktrans %}
-                          </div>
-                        {% endfor %}
-
-                      {% endif %}
-                    {% endwith %}
+                    <span>{{ line.description }}</span>
+                    {% if line.product.course %}
+                        <p>{{ line.product.course.id|course_organization }}</p>
+                    {% endif %}
                 </dd>
                 <dt class="line-price sr">{% trans "Item Price:" %}</dt>
                 <dd class="line-price price">{{ line.line_price_before_discounts_incl_tax|currency:order.currency }}</dd>
