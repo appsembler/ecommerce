@@ -1,5 +1,6 @@
 
 import httpretty
+import mock
 from django.conf import settings
 from django.template import Context, Template
 from django.test import RequestFactory
@@ -7,6 +8,7 @@ from django.test import RequestFactory
 from ecommerce.core.tests import toggle_switch
 from ecommerce.core.tests.decorators import mock_enterprise_api_client
 from ecommerce.coupons.tests.mixins import CouponMixin
+from ecommerce.enterprise.exceptions import EnterpriseDoesNotExist
 from ecommerce.enterprise.tests.mixins import EnterpriseServiceMockMixin
 from ecommerce.tests.testcases import TestCase
 
@@ -44,16 +46,13 @@ class EnterpriseTemplateTagsTests(EnterpriseServiceMockMixin, CouponMixin, TestC
         result = template.render(Context({'voucher': voucher, 'request': request}))
         self.assertIn(enterprise_customer_name, result)
 
-    @mock_enterprise_api_client
-    def test_enterprise_customer_for_voucher_when_enterprise_customer_does_not_exist(self):
+    @mock.patch('ecommerce.enterprise.templatetags.enterprise.utils.get_enterprise_customer_from_voucher')
+    def test_enterprise_customer_for_voucher_when_enterprise_customer_does_not_exist(self, mock_utils):
         """
         Verify that enterprise_customer_for_voucher assignment tag returns None if
         enterprise customer does not exist.
         """
-        enterprise_customer_name = "Test Enterprise Customer"
-        self.mock_access_token_response()
-        self.mock_specific_enterprise_customer_api(TEST_ENTERPRISE_CUSTOMER_UUID, name=enterprise_customer_name)
-
+        mock_utils.side_effect = EnterpriseDoesNotExist()
         coupon = self.create_coupon(enterprise_customer='')
         request = RequestFactory()
         request.site = self.site
@@ -65,4 +64,4 @@ class EnterpriseTemplateTagsTests(EnterpriseServiceMockMixin, CouponMixin, TestC
             "{{ enterprise_customer.name }}"
         )
         result = template.render(Context({'voucher': voucher, 'request': request}))
-        self.assertNotIn(enterprise_customer_name, result)
+        self.assertEquals(result, '')

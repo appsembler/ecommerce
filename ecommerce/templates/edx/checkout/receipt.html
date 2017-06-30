@@ -144,6 +144,14 @@
 
                   </div>
                   <div class="price">-{{ discount.amount|currency:order.currency }}</div>
+                  {% enterprise_customer_for_voucher discount.voucher as enterprise_customer %}
+                  {% if enterprise_customer %}
+                      <div class="enterprise-customer">
+                        {% blocktrans with enterprise_name=enterprise_customer.name %}
+                            Courtesy of {{ enterprise_name }}.
+                        {% endblocktrans %}
+                      </div>
+                  {%  endif %}
                 </div>
               {% endfor %}
 
