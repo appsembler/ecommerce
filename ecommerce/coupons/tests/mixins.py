@@ -23,8 +23,9 @@ class CourseCatalogMockMixin(object):
         cache.clear()
 
     @staticmethod
-    def build_discovery_catalogs_url(discovery_api_url):
-        return '{discovery_api_url}catalogs/'.format(discovery_api_url=discovery_api_url)
+    def build_discovery_catalogs_url(discovery_api_url, catalog_id=''):
+        suffix = '{}/'.format(catalog_id) if catalog_id else ''
+        return '{discovery_api_url}catalogs/{suffix}'.format(discovery_api_url=discovery_api_url, suffix=suffix)
 
     def mock_dynamic_catalog_single_course_runs_api(self, course_run, discovery_api_url, course_run_info=None):
         """ Helper function to register a dynamic course catalog API endpoint for the course run information. """
@@ -66,15 +67,10 @@ class CourseCatalogMockMixin(object):
             "viewers": []
         }
 
-        course_run_info_json = json.dumps(course_catalog)
-        course_run_url = '{}{}/'.format(
-            self.build_discovery_catalogs_url(discovery_api_url),
-            catalog_id,
-        )
-
         httpretty.register_uri(
-            httpretty.GET, course_run_url,
-            body=course_run_info_json,
+            httpretty.GET,
+            self.build_discovery_catalogs_url(discovery_api_url, catalog_id),
+            body=json.dumps(course_catalog),
             content_type='application/json',
             status=expected_status,
         )
@@ -207,7 +203,6 @@ class CourseCatalogMockMixin(object):
         """
         Helper function to register course catalog contains API endpoint.
         """
-        discovery_catalogs_url = self.build_discovery_catalogs_url(discovery_api_url)
         course_run_ids = course_run_ids or []
         courses = {course_run_id: True for course_run_id in course_run_ids}
 
@@ -215,8 +210,8 @@ class CourseCatalogMockMixin(object):
             'courses': courses
         }
         course_discovery_api_response_json = json.dumps(course_discovery_api_response)
-        catalog_contains_uri = '{}{}/contains/?course_run_id={}'.format(
-            discovery_catalogs_url, catalog_id, ','.join(course_run_ids)
+        catalog_contains_uri = '{}contains/?course_run_id={}'.format(
+            self.build_discovery_catalogs_url(discovery_api_url, catalog_id), ','.join(course_run_ids)
         )
 
         httpretty.register_uri(
@@ -231,13 +226,11 @@ class CourseCatalogMockMixin(object):
         Helper function to register course catalog API endpoint for a
         single catalog or multiple catalogs response.
         """
-        discovery_catalogs_url = self.build_discovery_catalogs_url(discovery_api_url)
         mocked_results = []
         for catalog_index, catalog_name in enumerate(catalog_name_list):
-            catalog_id = catalog_index + 1
             mocked_results.append(
                 {
-                    'id': catalog_id,
+                    'id': catalog_index + 1,
                     'name': catalog_name,
                     'query': 'title: *',
                     'courses_count': 0,
@@ -255,7 +248,7 @@ class CourseCatalogMockMixin(object):
 
         httpretty.register_uri(
             method=httpretty.GET,
-            uri=discovery_catalogs_url,
+            uri=self.build_discovery_catalogs_url(discovery_api_url),
             body=course_discovery_api_response_json,
             content_type='application/json'
         )
@@ -318,16 +311,9 @@ class CourseCatalogMockMixin(object):
         def callback(request, uri, headers):  # pylint: disable=unused-argument
             raise error
 
-        discovery_catalogs_url = self.build_discovery_catalogs_url(discovery_api_url)
-
-        if catalog_id:
-            course_catalog_uri = '{}{}/'.format(discovery_catalogs_url, catalog_id)
-        else:
-            course_catalog_uri = discovery_catalogs_url
-
         httpretty.register_uri(
             method=httpretty.GET,
-            uri=course_catalog_uri,
+            uri=self.build_discovery_catalogs_url(discovery_api_url, catalog_id),
             responses=[
                 httpretty.Response(body=callback, content_type='application/json', status_code=500)
             ]
