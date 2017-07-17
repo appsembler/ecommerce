@@ -140,7 +140,7 @@ class CouponOfferView(TemplateView):
 
 
 class CouponRedeemView(EdxOrderPlacementMixin, View):
-    @method_decorator(set_enterprise_cookie, 60)
+    @method_decorator(set_enterprise_cookie)
     @method_decorator(login_required)
     def get(self, request):
         """
