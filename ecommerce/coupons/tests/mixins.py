@@ -22,78 +22,8 @@ class CourseCatalogMockMixin(object):
         super(CourseCatalogMockMixin, self).setUp()
         cache.clear()
 
-    def mock_dynamic_catalog_single_course_runs_api(self, course_run, discovery_api_url, course_run_info=None):
+    def mock_dynamic_catalog_course_runs_api(self, course_run=None, query=None, course_run_info=None):
         """ Helper function to register a dynamic course catalog API endpoint for the course run information. """
-        if not course_run_info:
-            course_run_info = {
-                "course": "edX+DemoX",
-                "key": course_run.id,
-                "title": course_run.name,
-                "short_description": 'Foo',
-                "start": "2013-02-05T05:00:00Z",
-                "image": {
-                    "src": "/path/to/image.jpg",
-                },
-                'enrollment_end': None
-            }
-
-        course_run_info_json = json.dumps(course_run_info)
-        course_run_url = '{}course_runs/{}/?partner={}'.format(
-            discovery_api_url,
-            course_run.id,
-            self.site.siteconfiguration.partner.short_code
-        )
-
-        httpretty.register_uri(
-            httpretty.GET, course_run_url,
-            body=course_run_info_json,
-            content_type='application/json'
-        )
-
-    def mock_fetch_course_catalog(self, discovery_api_url, catalog_id=1, expected_query="*:*", expected_status='200'):
-        """
-        Helper function to register a catalog API endpoint for fetching catalog by catalog id.
-        """
-        course_catalog = {
-            "id": 1,
-            "name": "All Courses",
-            "query": expected_query,
-            "courses_count": 1,
-            "viewers": []
-        }
-
-        course_run_info_json = json.dumps(course_catalog)
-        course_run_url = '{}catalogs/{}/'.format(
-            discovery_api_url,
-            catalog_id,
-        )
-
-        httpretty.register_uri(
-            httpretty.GET, course_run_url,
-            body=course_run_info_json,
-            content_type='application/json',
-            status=expected_status,
-        )
-
-    def mock_course_catalog_api_for_catalog_voucher(
-            self, discovery_api_url, catalog_id=1, query="*:*", expected_status='200', course_run=None
-    ):
-        """
-        Helper function to register course catalog API endpoint for fetching course run information and
-        catalog by catalog id.
-        """
-        self.mock_fetch_course_catalog(
-            discovery_api_url, catalog_id=catalog_id, expected_query=query, expected_status=expected_status
-        )
-        self.mock_dynamic_catalog_course_runs_api(discovery_api_url, query=query, course_run=course_run)
-
-    def mock_dynamic_catalog_course_runs_api(
-            self, discovery_api_url, course_run=None, partner_code=None, query=None, course_run_info=None
-    ):
-        """
-        Helper function to register a course catalog API endpoint for getting
-        course runs information.
-        """
         if not course_run_info:
             course_run_info = {
                 'count': 1,
