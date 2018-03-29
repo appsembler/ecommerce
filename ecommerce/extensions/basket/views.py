@@ -19,15 +19,10 @@ from slumber.exceptions import SlumberBaseException
 
 from ecommerce.core.exceptions import SiteConfigurationError
 from ecommerce.core.url_utils import get_lms_url
-from ecommerce.courses.utils import get_certificate_type_display_value, get_course_info_from_catalog
-from ecommerce.enterprise.entitlements import get_enterprise_code_redemption_redirect
-from ecommerce.enterprise.utils import CONSENT_FAILED_PARAM, get_enterprise_customer_from_voucher
-from ecommerce.extensions.analytics.utils import (
-    prepare_analytics_data, track_segment_event, translate_basket_line_for_segment
-)
-from ecommerce.extensions.basket.utils import get_basket_switch_data, prepare_basket
-from ecommerce.extensions.offer.utils import format_benefit_value, render_email_confirmation_if_required
-from ecommerce.extensions.order.exceptions import AlreadyPlacedOrderException
+from ecommerce.courses.utils import get_certificate_type_display_value, get_course_info_from_lms, mode_for_seat
+from ecommerce.extensions.analytics.utils import prepare_analytics_data
+from ecommerce.extensions.basket.utils import prepare_basket, get_basket_switch_data
+from ecommerce.extensions.offer.utils import format_benefit_value
 from ecommerce.extensions.partner.shortcuts import get_partner_for_site
 from ecommerce.extensions.payment.constants import CLIENT_SIDE_CHECKOUT_FLAG_NAME
 from ecommerce.extensions.payment.forms import PaymentForm
@@ -174,22 +169,15 @@ class BasketSummaryView(BasketView):
         course_end = None
 
         try:
-            course = get_course_info_from_catalog(self.request.site, course_key)
+            course = get_course_info_from_lms(course_key)
             try:
-                image_url = course['image']['src']
+                image_url = course['media']['image']['raw']
             except (KeyError, TypeError):
                 image_url = ''
             short_description = course.get('short_description', '')
-            course_name = course.get('title', '')
-
-            # The course start/end dates are not currently used
-            # in the default basket templates, but we are adding
-            # the dates to the template context so that theme
-            # template overrides can make use of them.
-            course_start = self._deserialize_date(course.get('start'))
-            course_end = self._deserialize_date(course.get('end'))
+            course_name = course['name']
         except (ConnectionError, SlumberBaseException, Timeout):
-            logger.exception('Failed to retrieve data from Catalog Service for course [%s].', course_key)
+            logger.exception('Failed to retrieve data from Course API for course [%s].', course_key)
 
         return {
             'product_title': course_name,
