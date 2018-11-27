@@ -101,11 +101,10 @@ class Payflow(BasePaymentProcessor):
         # 1.3 Payflow response wasn't successfull
         elif params["RESULT"] != 0 :
             print("Unsuccessfull token generation")
-        payment_page_url = "{}?SECURETOKENID={}&SECURETOKEN={}&PONUM={}&INVNUM={}&COMMENT2={}&TEMPLATE={}&RETURNURL={}".format(
+        payment_page_url = "{}?SECURETOKENID={}&SECURETOKEN={}&PONUM={}&COMMENT2={}&TEMPLATE={}&RETURNURL={}".format(
             PAYFLOW_ENDPOINT,
             token_id,
             token,
-            basket.order_number,
             basket.order_number,
             basket.order_number,
             TEMPLATE_TYPE,
