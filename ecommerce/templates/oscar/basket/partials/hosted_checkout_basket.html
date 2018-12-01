@@ -137,6 +137,14 @@
                 </div>
             {% endif %}
 
+            <div>
+              <form>
+                {% csrf_token %}
+                First name: <input id="firstname" type="text" placeholder="  Card holder first name" size="30" name="FirstName" style="margin: 1rem;"><br>
+                Last name: <input id="lastname" type="text" size="30" placeholder="  Card holder last name" name="LastName" style="margin: 1rem;"><br>
+              </form>
+            </div>
+
             <div class="pull-right payment-buttons" data-basket-id="{{ basket.id }}">
                 {% if free_basket %}
                     <a href="{% url 'checkout:free-checkout' %}"
