@@ -79,7 +79,8 @@ class Payflow(BasePaymentProcessor):
         PAYFLOW_ENDPOINT = ECOM_ENV_TOKENS['PAYMENT_PROCESSOR_CONFIG']['edx']['payflow']['PAYFLOW_ENDPOINT']
         PAYFLOW_TOKEN_ENDPOINT = ECOM_ENV_TOKENS['PAYMENT_PROCESSOR_CONFIG']['edx']['payflow']['PAYFLOW_TOKEN_ENDPOINT']
         RETURNURL = ECOM_ENV_TOKENS['PAYMENT_PROCESSOR_CONFIG']['edx']['payflow']['RETURNURL']
-        data = "PARTNER={}&PWD={}&VENDOR={}&USER={}&TRXTYPE={}&AMT={}&CURRENCY={}&CREATESECURETOKEN=Y&SECURETOKENID={}&RETURNURL={}".format(
+        ERRORURL = ECOM_ENV_TOKENS['PAYMENT_PROCESSOR_CONFIG']['edx']['payflow']['error_url']
+        data = "PARTNER={}&PWD={}&VENDOR={}&USER={}&TRXTYPE={}&AMT={}&CURRENCY={}&CREATESECURETOKEN=Y&SECURETOKENID={}&RETURNURL={}&ERRORURL={}".format(
             PAYFLOW_PARTNER,
             Payflow_PASSWORD,
             VENDOR_ID,
@@ -88,7 +89,8 @@ class Payflow(BasePaymentProcessor):
             unicode(basket.total_incl_tax),
             CURRENCY,
             self.token_id_generator(),
-            RETURNURL
+            RETURNURL,
+            ERRORURL
             )
         resp, content = h.request(PAYFLOW_TOKEN_ENDPOINT, "POST", data)
         # 1.1 Check the Payflow response
@@ -104,7 +106,7 @@ class Payflow(BasePaymentProcessor):
 
         cardholder_firstname = request.data["cardholder_firstname"]
         cardholder_lastname = request.data["cardholder_lastname"]
-        payment_page_url = "{}?SECURETOKENID={}&SECURETOKEN={}&PONUM={}&COMMENT2={}&TEMPLATE={}&RETURNURL={}&BILLTOFIRSTNAME={}&BILLTOLASTNAME={}".format(
+        payment_page_url = "{}?SECURETOKENID={}&SECURETOKEN={}&PONUM={}&COMMENT2={}&TEMPLATE={}&RETURNURL={}&BILLTOFIRSTNAME={}&BILLTOLASTNAME={}&ERRORURL={}".format(
             PAYFLOW_ENDPOINT,
             token_id,
             token,
@@ -113,7 +115,8 @@ class Payflow(BasePaymentProcessor):
             TEMPLATE_TYPE,
             RETURNURL,
             cardholder_firstname,
-            cardholder_lastname
+            cardholder_lastname,
+            ERRORURL
             )
 
         parameters = {
