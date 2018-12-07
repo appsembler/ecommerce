@@ -106,12 +106,13 @@ class Payflow(BasePaymentProcessor):
 
         cardholder_firstname = request.data["cardholder_firstname"]
         cardholder_lastname = request.data["cardholder_lastname"]
+
         payment_page_url = "{}?SECURETOKENID={}&SECURETOKEN={}&PONUM={}&COMMENT2={}&TEMPLATE={}&RETURNURL={}&BILLTOFIRSTNAME={}&BILLTOLASTNAME={}&ERRORURL={}".format(
             PAYFLOW_ENDPOINT,
             token_id,
             token,
             basket.order_number,
-            basket.order_number,
+            basket.order_number+"; "+ cardholder_firstname + " " + cardholder_lastname,
             TEMPLATE_TYPE,
             RETURNURL,
             cardholder_firstname,
