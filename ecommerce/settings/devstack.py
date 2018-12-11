@@ -35,6 +35,21 @@ PAYMENT_PROCESSOR_CONFIG = {
             'cancel_checkout_path': PAYMENT_PROCESSOR_CANCEL_PATH,
             'error_path': PAYMENT_PROCESSOR_ERROR_PATH,
         },
+        'payflow': {
+            'RETURNURL': None,
+            'PAYFLOW_TOKEN_ENDPOINT': None,
+            'PAYFLOW_ENDPOINT': None,
+            'PAYFLOW_PARTNER': 'PayPal',
+            'TEMPLATE_TYPE': 'TEMPLATEA',
+            'TRANSACTION_TYPE': 'A',
+            'CURRENCY': 'USD',
+            'Payflow_PASSWORD': None,
+            'VENDOR_ID': None,
+            'Payflow_USER': None,
+            'receipt_path': PAYMENT_PROCESSOR_RECEIPT_PATH,
+            'cancel_checkout_path': PAYMENT_PROCESSOR_CANCEL_PATH,
+            'error_path': PAYMENT_PROCESSOR_ERROR_PATH,
+        },
     },
 }
 # END PAYMENT PROCESSING

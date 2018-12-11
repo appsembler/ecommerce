@@ -294,9 +294,13 @@ define([
                     deferred = new $.Deferred(),
                     promise = deferred.promise(),
                     paymentProcessor = $btn.data('processor-name'),
+                    cardholder_firstname = $("#firstname").val(),
+                    cardholder_lastname = $("#lastname").val(),
                     data = {
                         basket_id: basketId,
-                        payment_processor: paymentProcessor
+                        payment_processor: paymentProcessor,
+                        cardholder_firstname: cardholder_firstname,
+                        cardholder_lastname: cardholder_lastname
                     };
 
                 Utils.disableElementWhileRunning($btn, function() { return promise; });
