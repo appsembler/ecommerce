@@ -171,7 +171,7 @@
                 if (firstname=="" || lastname=="" )
                 {
                   if ($("#names_error").length == 0)
-                    $("#messages").prepend($('<div id="names_error" style="color: #000;font-size: 1.1rem;border: 1px solid #4e4e4e;padding: 0.5rem;">The cardholder first name and last name must be entered. Please enter the credit cardholder name and click on the checkout button. If you continue to have problems email support at <a href="mailto:ctnmhelp@uw.edu">ctnmhelp@uw.edu</a></div>'));
+                    $("#messages").prepend($('<div id="names_error" style="color: #000;font-size: 1.1rem;border: 1px solid #4e4e4e;padding: 0.5rem;">Please enter the first and last name of the cardholder and resubmit by clicking the <b>Checkout</b> button. If you continue to have problems, contact UW Continuum College support at <a href="mailto:ctnmhelp@uw.edu">ctnmhelp@uw.edu</a></div>'));
                 }
                 if ($("#firstname").val().length > 0 & $("#lastname").val().length > 0){
                   $("#processor_button").prop('disabled', false)
