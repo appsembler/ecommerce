@@ -47,7 +47,7 @@ define([
         onFail = function(){
             var message = gettext('Problem occurred during checkout. Please contact support');
             $('#messages').empty().append(
-                _s.sprintf('<div class="error">%s</div>', message)
+                _s.sprintf('<div class="error" style="color: #fff;font-size: 1.3rem;padding: 0.5rem;">%s</div>', message)
             );
         },
         onSuccess = function (data) {

@@ -80,6 +80,7 @@ class Payflow(BasePaymentProcessor):
         PAYFLOW_TOKEN_ENDPOINT = ECOM_ENV_TOKENS['PAYMENT_PROCESSOR_CONFIG']['edx']['payflow']['PAYFLOW_TOKEN_ENDPOINT']
         RETURNURL = ECOM_ENV_TOKENS['PAYMENT_PROCESSOR_CONFIG']['edx']['payflow']['RETURNURL']
         ERRORURL = ECOM_ENV_TOKENS['PAYMENT_PROCESSOR_CONFIG']['edx']['payflow']['error_url']
+        MODE = ECOM_ENV_TOKENS['PAYMENT_PROCESSOR_CONFIG']['edx']['payflow']['mode']
         data = "PARTNER={}&PWD={}&VENDOR={}&USER={}&TRXTYPE={}&AMT={}&CURRENCY={}&CREATESECURETOKEN=Y&SECURETOKENID={}&RETURNURL={}&ERRORURL={}".format(
             PAYFLOW_PARTNER,
             Payflow_PASSWORD,
@@ -107,7 +108,7 @@ class Payflow(BasePaymentProcessor):
         cardholder_firstname = request.data["cardholder_firstname"]
         cardholder_lastname = request.data["cardholder_lastname"]
 
-        payment_page_url = "{}?SECURETOKENID={}&SECURETOKEN={}&PONUM={}&COMMENT2={}&TEMPLATE={}&RETURNURL={}&BILLTOFIRSTNAME={}&BILLTOLASTNAME={}&ERRORURL={}".format(
+        payment_page_url = "{}?SECURETOKENID={}&SECURETOKEN={}&PONUM={}&COMMENT2={}&TEMPLATE={}&RETURNURL={}&BILLTOFIRSTNAME={}&BILLTOLASTNAME={}&ERRORURL={}&MODE={}".format(
             PAYFLOW_ENDPOINT,
             token_id,
             token,
@@ -117,7 +118,8 @@ class Payflow(BasePaymentProcessor):
             RETURNURL,
             cardholder_firstname,
             cardholder_lastname,
-            ERRORURL
+            ERRORURL,
+            MODE
             )
 
         parameters = {
