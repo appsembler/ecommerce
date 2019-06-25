@@ -1,6 +1,8 @@
 from django.conf.urls import include, url
 
-from ecommerce.extensions.payment.views import PaymentFailedView, SDNFailure, cybersource, paypal, stripe
+from ecommerce.extensions.payment.views import PaymentFailedView, SDNFailure, cybersource, paypal, stripe, payflow
+from ecommerce.extensions.payment.views.payflow import PayflowPaymentResponseView
+
 
 CYBERSOURCE_APPLE_PAY_URLS = [
     url(r'^authorize/$', cybersource.CybersourceApplePayAuthorizationView.as_view(), name='authorize'),
@@ -31,4 +33,5 @@ urlpatterns = [
     url(r'^paypal/', include(PAYPAL_URLS, namespace='paypal')),
     url(r'^sdn/', include(SDN_URLS, namespace='sdn')),
     url(r'^stripe/', include(STRIPE_URLS, namespace='stripe')),
+    url(r'^payflow/execute/$', PayflowPaymentResponseView.as_view(), name='payflow_execute'),
 ]

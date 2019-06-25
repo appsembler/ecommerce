@@ -17,7 +17,7 @@ from slumber.exceptions import SlumberBaseException
 from ecommerce.core.constants import DEFAULT_CATALOG_PAGE_SIZE
 from ecommerce.coupons.utils import fetch_course_catalog, get_catalog_course_runs
 from ecommerce.courses.models import Course
-from ecommerce.courses.utils import get_course_info_from_catalog
+from ecommerce.courses.utils import get_course_info_from_lms
 from ecommerce.extensions.api import serializers
 from ecommerce.extensions.api.permissions import IsOffersOrIsAuthenticatedAndStaff
 from ecommerce.extensions.api.v2.views import NonDestroyableModelViewSet
@@ -238,9 +238,11 @@ class VoucherViewSet(NonDestroyableModelViewSet):
             course_id = product.course_id
             course = get_object_or_404(Course, id=course_id)
             stock_record = get_object_or_404(StockRecord, product__id=product.id)
-            course_info = get_course_info_from_catalog(request.site, product)
+            course_info = get_course_info_from_lms(course_id)
 
             if course_info:
+                course_info['image'] = {'src': get_lms_url(course_info['media']['course_image']['uri'])}
+                
                 offers.append(self.get_course_offer_data(
                     benefit=benefit,
                     course=course,

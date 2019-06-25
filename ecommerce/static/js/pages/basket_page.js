@@ -25,7 +25,9 @@ define([
 
             onFail: function() {
                 var message = gettext('Problem occurred during checkout. Please contact support.');
-                $('#messages').html(_s.sprintf('<div class="alert alert-error">%s</div>', message));
+                $('#messages').empty().append(
+                  _s.sprintf('<div class="error" style="color: #fff;font-size: 1.3rem;padding: 0.5rem;">%s</div>', message)
+                );
             },
 
             onSuccess: function(data) {
@@ -529,9 +531,13 @@ define([
                         deferred = new $.Deferred(),
                         promise = deferred.promise(),
                         paymentProcessor = $btn.data('processor-name'),
+                        cardholder_firstname = $("#firstname").val(),
+                        cardholder_lastname = $("#lastname").val(),
                         data = {
                             basket_id: basketId,
-                            payment_processor: paymentProcessor
+                            payment_processor: paymentProcessor,
+                            cardholder_firstname: cardholder_firstname,
+                            cardholder_lastname: cardholder_lastname
                         };
 
                     Utils.disableElementWhileRunning($btn, function() {
