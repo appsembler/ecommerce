@@ -3,6 +3,7 @@ import hashlib
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from opaque_keys.edx.keys import CourseKey
+from django.core.cache import cache
 from edx_rest_api_client.client import EdxRestApiClient
 from ecommerce.core.url_utils import get_lms_url
 from ecommerce.cache_utils.utils import TieredCache
