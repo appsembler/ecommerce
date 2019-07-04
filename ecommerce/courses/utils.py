@@ -2,6 +2,7 @@ import hashlib
 
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.core.cache import cache
 from opaque_keys.edx.keys import CourseKey
 
 from ecommerce.cache_utils.utils import TieredCache
