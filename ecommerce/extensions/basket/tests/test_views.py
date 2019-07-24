@@ -3,6 +3,7 @@ import hashlib
 import urllib
 from decimal import Decimal
 
+import unittest
 import ddt
 import httpretty
 import mock

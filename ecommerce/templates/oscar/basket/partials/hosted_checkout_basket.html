@@ -8,6 +8,8 @@
     {% include 'partials/alert_messages.html' %}
 {% endif %}
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 <div id="content-inner">
     {% block basket_form_main %}
         <form action="." method="post">
@@ -137,7 +139,48 @@
                 </div>
             {% endif %}
 
-            <div class="pull-right payment-buttons" data-basket-id="{{ basket.id }}">
+
+            <div>
+              <form>
+                {% csrf_token %}
+                First name: <input id="firstname" type="text" placeholder="  Card holder first name" size="30" name="FirstName" style="margin: 1rem;"><br>
+                Last name: <input id="lastname" type="text" size="30" placeholder="  Card holder last name" name="LastName" style="margin: 1rem;"><br>
+              </form>
+            </div>
+
+
+            <script>
+              $("#firstname").mouseover(function(){
+                if ($("#firstname").val().length > 0 & $("#lastname").val().length > 0){
+                  $("#processor_button").prop('disabled', false)
+                }
+                if (firstname=="" || lastname=="" ){
+                  $("#processor_button").prop('disabled', true)
+                }
+              });
+              $("#lastname").mouseout(function(){
+                if ($("#firstname").val().length > 0 & $("#lastname").val().length > 0){
+                  $("#processor_button").prop('disabled', false)
+                }
+                if (firstname=="" || lastname=="" ){
+                  $("#processor_button").prop('disabled', true)
+                }
+              });
+            function name_checker() {
+                firstname = $("#firstname").val();
+                lastname = $("#lastname").val();
+                if (firstname=="" || lastname=="" )
+                {
+                  if ($("#names_error").length == 0)
+                    $("#messages").prepend($('<div id="names_error" style="color: #000;font-size: 1.1rem;border: 1px solid #4e4e4e;padding: 0.5rem;">The cardholder first name and last name must be entered. Please enter the credit cardholder name and click on the checkout button. If you continue to have problems email support at <a href="mailto:ctnmhelp@uw.edu">ctnmhelp@uw.edu</a></div>'));
+                }
+                if ($("#firstname").val().length > 0 & $("#lastname").val().length > 0){
+                  $("#processor_button").prop('disabled', false)
+                }
+            }
+            </script>
+
+            <div class="pull-right payment-buttons" data-basket-id="{{ basket.id }}" onclick="name_checker()">
                 {% if free_basket %}
                     <a href="{% url 'checkout:free-checkout' %}"
                        data-track-type="click"
@@ -148,7 +191,8 @@
                     </a>
                 {% else %}
                     {% for processor in payment_processors %}
-                        <button data-track-type="click"
+                        <button disabled id="processor_button"
+                                data-track-type="click"
                                 data-track-event="edx.bi.ecommerce.basket.payment_selected"
                                 data-track-category="checkout"
                                 data-processor-name="{{ processor.NAME|lower }}"
@@ -159,7 +203,9 @@
                                 {% trans "Checkout" %}
                             {% elif processor.NAME == 'paypal' %}
                                 {# Translators: Do NOT translate the name PayPal. #}
-                                {% trans "Checkout with PayPal" %}
+                                {% trans "Checkout" %}
+                            {% elif processor.NAME == 'payflow' %}
+                                {% trans "Checkout" %}
                             {% endif %}
                         </button>
                     {% endfor %}
